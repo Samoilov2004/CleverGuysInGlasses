@@ -1,55 +1,56 @@
 import json
 import re
+import sys
 
 def scan_json_for_pattern(filename, regex_pattern, window=50):
-    # Загрузить json (обычно это dict: id -> {text: ..., ...})
     with open(filename, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    # Компилировать паттерн (пример: r'\bIC\s*[-_]?50\b')
     pattern = re.compile(regex_pattern, re.IGNORECASE)
-
     results = []
-    for doc_id, doc in data.items():
-        text = doc['text'] if isinstance(doc, dict) and 'text' in doc else str(doc)
+
+    for ext_id, doc in data.items():
+        cur_id = ext_id
+        text = None
+
+        if isinstance(doc, str):
+            text = doc
+
+        elif isinstance(doc, dict):
+            cur_id = doc.get('id', ext_id)
+            if 'text' in doc and isinstance(doc['text'], str):
+                text = doc['text']
+            else:
+                for v in doc.values():
+                    if isinstance(v, str) and len(v) > 30:
+                        text = v
+                        break
+
+        if not isinstance(text, str):
+            continue
+
         for m in pattern.finditer(text):
             start = max(0, m.start() - window)
             end = min(len(text), m.end() + window)
             excerpt = text[start:end]
             results.append({
-                'doc_id': doc_id,
+                'doc_id': cur_id,
                 'match': m.group(0),
                 'start': m.start(),
                 'end': m.end(),
                 'excerpt': excerpt
             })
-
     return results
 
-# Пример использования:
-# regex_pat = r'\bIC\s*[-_]?50\b|\bEC\s*[-_]?50\b|\bK[ _\-]?i\b|\bK[ _\-]?d\b'
-# Можно делать read_json_and_scan_for_constants('myfile.json', regex_pat)
 if __name__ == '__main__':
-    import sys
-    # Например: python scan_json.py data.json
-    filename = input("Введите имя вашего json-файла: ").strip()
-    # Пример паттерна (расширяйте под задачу!)
-    # Парсер v3
-    sub_5 = "₅"
-    sub_0 = "₀"
-    digits = r'(?:50|₅₀)'
+    if len(sys.argv) < 3:
+        print(f"Usage: python {sys.argv[0]} <json_file> <regex_pattern>")
+        sys.exit(1)
 
-    pattern = (
-        r'(?:'
-        r'\bIC' + digits + r'\s*\(\s*nM\s*\)'
-        r'|\bEC' + digits + r'\s*\(\s*nM\s*\)'
-        r'|\bKi\s*\(\s*nM\s*\)'
-        r'|\bKd\s*\(\s*nM\s*\)'
-        r')'
-    )
-    regex = re.compile(pattern)
+    filename = sys.argv[1]
+    regex_pat = sys.argv[2]
+
     results = scan_json_for_pattern(filename, regex_pat)
-
     for res in results:
         print(f"Doc: {res['doc_id']} | Found: {res['match']} | [{res['start']}-{res['end']}]")
         print(f"...{res['excerpt']}...")
