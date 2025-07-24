@@ -18,8 +18,8 @@
 "Малая" (mini) версия — для неё включаются только патенты с наиболее узкоспециализированными кодами и словами, что повышает точность, но уменьшает охват.
 Итог фильтрации сохраняется в csv-файлы:
 
-[filtered_patents.csv](google_parser/filtered_patents.csv) — основная выборка
-[filtered_patents_mini.csv](google_parser/filtered_patents_mini.csv) — наиболее релевантная и "чистая" часть
+- [filtered_patents.csv](google_parser/filtered_patents.csv) — основная выборка
+- [filtered_patents_mini.csv](google_parser/filtered_patents_mini.csv) — наиболее релевантная и "чистая" часть
 
 ### Парсинг текстов патентов c регулярными выражениями.
 Изначально мы рассматривали использование базы SureChEMBL и её API:
