@@ -19,7 +19,7 @@
 ---
 
 ## 👥 О команде
-- [Мрасов Амир]('')
-- [Кирилл Моисеенко]('https://github.com/miau-murk')
-- [Самойлов Михаил]('https://t.me/samoilov_ma')
-- [Лев Эйдельман]('https://new.embassies.gov.il/russia/ru')
+- [Мрасов Амир](https://t.me/jdeqk)
+- [Кирилл Моисеенко](https://github.com/miau-murk)
+- [Самойлов Михаил](https://t.me/samoilov_ma)
+- [Лев Эйдельман](https://new.embassies.gov.il/russia/ru)
